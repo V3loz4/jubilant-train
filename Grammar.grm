@@ -48,70 +48,82 @@
 
 <Variant> ::= CaseLabelList ":" FieldListSequence
 
-<CaseLabelList> ::= CaseLabels { "," CaseLabels }
+<CaseLabelList> ::= <CaseLabels> <Aux_CaseLabelList>
 
-<CaseLabels> ::= ConstantExpression [".." ConstantExpression ]
+<Aux_CaseLabelList> ::= <Aux_CaseLabelList> "," <CaseLabels> |
 
-<SetType> ::= SET OF SimpleType
+<CaseLabels> ::= <ConstantExpression> [".." <ConstantExpression> ]
 
-<PointerType> ::= POINTER TO Type
+<SetType> ::= SET OF <SimpleType>
 
-<ProcedureType> ::= PROCEDURE FormalTypeList
+<PointerType> ::= POINTER TO <Type>
 
-<FormalTypeList> ::= "(" [ [ VAR ] FormalType { "," [ VAR ] FormalType } ] ")" [ ":" Qualident ]
+<ProcedureType> ::= PROCEDURE <FormalTypeList>
 
-<VariableDeclaration> ::= IdentifierList ":" Type
+<FormalTypeList> ::= "(" [ [ VAR ] <FormalType> <Aux_FormalTypeList> ] ")" [ ":" <Qualident> ]
 
-<ProcedureDeclaration> ::= ProcedureHeading ";" Block Identifier
+<Aux_FormalTypeList> ::= <Aux_FormalTypeList> "," [ VAR ] <FormalType> |
 
-<ProcedureHeading> ::= PROCEDURE Identifier [ FormalParameters ]
+<VariableDeclaration> ::= <IdentifierList> ":" <Type>
 
-<FormalParameters> ::= "(" [ FormalParametersSection { "," FormalParametersSection } ] ")" [ ":" Qualident ]
+<ProcedureDeclaration> ::= <ProcedureHeading> ";" <Block> <Identifier>
 
-<FormalParametersSection> ::= [ VAR ] IdentifierList ":" FormalType
+<ProcedureHeading> ::= PROCEDURE <Identifier> [ <FormalParameters> ]
 
-<FormalType> ::= [ ARRAY OF ] Qualident
+<FormalParameters> ::= "(" [ <FormalParametersSection> <Aux_FormalParameters> ] ")" [ ":" <Qualident> ]
 
-<ModuleDeclaration> ::= MODULE Identifier [ Priority ] ";" { Import } [ Export ] Block Identifier
+<Aux_FormalParameters> ::= <Aux_FormalParameters> "," <FormalParametersSection> |
 
-<StatementSequence> ::= Statement { ";" Statement }
+<FormalParametersSection> ::= [ VAR ] <IdentifierList> ":" <FormalType>
 
-<Statement> ::= [ Assignment |
-            ProcedureCall |
-            IfStatement |
-            CaseStatement |
-            WhileStatement |
-            RepeatStatement |
-            ForStatement |
-            WithStatement |
+<FormalType> ::= [ ARRAY OF ] <Qualident>
+
+<ModuleDeclaration> ::= MODULE <Identifier> [ <Priority> ] ";" <R_Import> [ <Export> ] <Block> <Identifier>
+
+<StatementSequence> ::= <Statement> { ";" <Statement> }
+
+<Statement> ::= [ <Assignment> |
+            <ProcedureCall> |
+            <IfStatement> |
+            <CaseStatement> |
+            <WhileStatement> |
+            <RepeatStatement> |
+            <ForStatement> |
+            <WithStatement> |
             EXIT |
-            RETURN [ Expression ] ]
+            RETURN [ <Expression> ] ]
 
-<Assignment> ::= Designator ":=" Expression
+<Assignment> ::= <Designator> ":=" <Expression>
 
-<ProcedureCall> ::= Designator [ ActualParameters ]
+<ProcedureCall> ::= <Designator> [ <ActualParameters> ]
 
-<IfStatement> ::= IF Expression THEN StatementSequence { ELSIF Expression THEN StatementSequence } [ ELSE StatementSequence ] END
+<IfStatement> ::= IF <Expression> THEN <StatementSequence> { ELSIF <Expression> THEN <StatementSequence> } [ ELSE <StatementSequence> ] END
 
-<CaseStatement> ::= CASE Expression OF Case { "|" Case } [ ELSE StatementSequence ] END
+<CaseStatement> ::= CASE <Expression> OF <Case> <Aux_CaseStatement> [ ELSE <StatementSequence> ] END
 
-<Case> ::= CaseLabelList ":" StatementSequence
+<Aux_CaseStatement> ::= <Aux_CaseStatement> "|" <Case> |
 
-<WhileStatement> ::= WHILE Expression DO StatementSequence END
+<Case> ::= <CaseLabelList> ":" <StatementSequence>
 
-<RepeatStatement> ::= REPEAT StatementSequence UNTIL Expression
+<WhileStatement> ::= WHILE <Expression> DO <StatementSequence> END
 
-<ForStatement> ::= FOR Identifier ":=" Expression TO Expression [ BY ConstantExpression ] DO StatementSequence END
+<RepeatStatement> ::= REPEAT <StatementSequence> UNTIL <Expression>
 
-<WithStatement> ::= WITH Designator DO StatementSequence END
+<ForStatement> ::= FOR <Identifier> ":=" <Expression> TO <Expression> [ BY <ConstantExpression> ] DO <StatementSequence> END
 
-<ActualParameters> ::= "(" [ ExpressionList ] ")"
+<WithStatement> ::= WITH <Designator> DO <StatementSequence> END
 
-<ExpressionList> ::= Expression { "," Expression }
+<ActualParameters> ::= "(" [ <ExpressionList> ] ")"
 
-<Expression> ::= SimpleExpression [ RelOperator SimpleExpression ]
+<ExpressionList> ::= <Expression> <Aux_ExpressionList>
 
-<SimpleExpression> ::= [ "+" | "-" ] Term { AddOperator Term }
+<Aux_ExpressionList> ::= <Aux_ExpressionList> "," <Expression> |
+
+<Expression> ::= <SimpleExpression> [ <RelOperator> <SimpleExpression> ]
+
+<SimpleExpression> ::= [ "+" | "-" ] <Term> <Aux_SimpleExpresions>
+
+<Aux_SimpleExpresions> ::= <Aux_SimpleExpresions> <AddOperator <Term> |
 
 <Term> ::= <Factor> <Aux_Term>
 
