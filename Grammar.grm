@@ -1,15 +1,15 @@
 <CompilationUnit> ::= <DefinitionModule> | IMPLEMENTATION <ProgramModule> | <ProgramModule>
 
-<DefinitionModule> ::= DEFINITION MODULE <Identifier> ";" <R_Import> <R_Definition> END "." | 
+<DefinitionModule> ::= DEFINITION MODULE <Identifier> ";" <R_Import> <R_Definition> END "." |
             DEFINITION MODULE <Identifier> ";" <R_Import> Export <R_Definition> END "."
 
-<R_Import> ::= <R_Import> <Import> | 
+<R_Import> ::= <R_Import> <Import> |
 
-<R_Definition> ::= <R_Definition> <Definition> | 
+<R_Definition> ::= <R_Definition> <Definition> |
 
-<Definition> ::= CONST { ConstantDeclaration ";" } | 
-             TYPE { Identifier [ "=" Type ] ";" } | 
-             VAR { VariableDeclaration ";" } | 
+<Definition> ::= CONST { ConstantDeclaration ";" } |
+             TYPE { Identifier [ "=" Type ] ";" } |
+             VAR { VariableDeclaration ";" } |
              ProcedureHeading ";"
 
 <ProgramModule> ::= MODULE Identifier [ Priority ] ";" { Import } Block Identifier "."
@@ -22,17 +22,17 @@
 
 <Block> ::= { Declaration } [ BEGIN StatementSequence ] END
 
-<Declaration> ::= CONST { ConstantDeclaration ";" } | 
-               TYPE { TypeDeclaration ";" } | 
-               VAR { VariableDeclaration ";" } | 
-               ProcedureDeclaration ";" | 
+<Declaration> ::= CONST { ConstantDeclaration ";" } |
+               TYPE { TypeDeclaration ";" } |
+               VAR { VariableDeclaration ";" } |
+               ProcedureDeclaration ";" |
                ModuleDeclaration ";"
 
 <ConstantDeclaration> ::= Identifier "=" ConstantExpression
 
 <TypeDeclaration> ::= Identifier "=" Type
 
-<Type> ::= SimpleType | ArrayType | SetType | PointerType | ProcedureType 
+<Type> ::= SimpleType | ArrayType | SetType | PointerType | ProcedureType
 
 <SimpleType> ::= Qualident | Enumeration | SubrangeType
 
@@ -45,7 +45,7 @@
 <FieldListSequence> ::= FieldList { ";" FieldList }
 
 <FieldList> ::= [ IdentifierList ":" Type | CASE [ Identifier ":" ] Qualident OF Variant { "|" Variant } [ ELSE FieldListSequence ] ]
-             
+
 <Variant> ::= CaseLabelList ":" FieldListSequence
 
 <CaseLabelList> ::= CaseLabels { "," CaseLabels }
@@ -76,15 +76,15 @@
 
 <StatementSequence> ::= Statement { ";" Statement }
 
-<Statement> ::= [ Assignment | 
-            ProcedureCall | 
-            IfStatement | 
-            CaseStatement | 
-            WhileStatement | 
-            RepeatStatement | 
-            ForStatement | 
-            WithStatement | 
-            EXIT | 
+<Statement> ::= [ Assignment |
+            ProcedureCall |
+            IfStatement |
+            CaseStatement |
+            WhileStatement |
+            RepeatStatement |
+            ForStatement |
+            WithStatement |
+            EXIT |
             RETURN [ Expression ] ]
 
 <Assignment> ::= Designator ":=" Expression
@@ -113,39 +113,51 @@
 
 <SimpleExpression> ::= [ "+" | "-" ] Term { AddOperator Term }
 
-<Term> ::= Factor { MulOperator Factor }
+<Term> ::= <Factor> <Aux_Term>
 
-<Factor> ::= Number | String | Set | Designator [ ActualParameters ] | "(" Expression ")" | NOT Factor
+<Aux_Term> ::= <Aux_Term> <MulOperator> <Factor> |
 
-<ConstantExpression> ::= SimpleConstantExpression [ RelOperator SimpleConstantExpression ]
+<Factor> ::= <Number> | <String> | <Set> | <Designator> [ <ActualParameters> ] | "(" <Expression> ")" | NOT <Factor>
 
-<SimpleConstantExpression> ::= [ "+" | "-" ] ConstantTerm { AddOperator ConstantTerm }
+<ConstantExpression> ::= <SimpleConstantExpression> [ <RelOperator> <SimpleConstantExpression> ]
 
-<ConstantTerm> ::= ConstantFactor { MulOperator ConstantFactor }
+<SimpleConstantExpression> ::= [ "+" | "-" ] <ConstantTerm> <Aux_SimpleConstantExpression>
 
-<ConstantFactor> ::= Qualident | Number | String | Set | "(" ConstantExpression ")" | NOT ConstantFactor
+<Aux_SimpleConstantExpression> ::= <Aux_SimpleConstantExpression> <AddOperator> <ConstantTerm> |
 
-<Set> ::= [ Qualident ] "{" [ Element { "," Element } ] "}"
+<ConstantTerm> ::= <ConstantFactor> <Aux_Constant_Term>
 
-<Element> ::= ConstantExpression [ ".." ConstantExpression ]
+<Aux_ConstantTerm> ::= <Aux_ConstantTerm> <MulOperator> <ConstantFactor> |
 
-<Designator> ::= Qualident { "." Identifier | "[" ExpressionList "]" | "^" }
+<ConstantFactor> ::= <Qualident> | <Number> | <String> | <Set> | "(" <ConstantExpression> ")" | NOT <ConstantFactor>
 
-<Qualident> ::= Identifier { "." Identifier }
+<Set> ::= [ <Qualident> ] "{" [ <Element> { "," <Element> } ] "}"
 
-<IdentifierList> ::= Identifier { "," Identifier }
+<Element> ::= <ConstantExpression> [ ".." <ConstantExpression> ]
 
-<RelOperator> ::= "=" | "#" | "<>" | "<" | "<=" | ">" | ">=" | IN
+<Designator> ::= <Qualident> <Aux_Designator>
 
-<AddOperator> ::= "+" | "-" | OR
+<Aux_Designator> ::= <Aux_Designator> "." Identifier | <Aux_Designator> "[" ExpressionList "]" | <Aux_Designator> "^" |
+
+<Qualident> ::= Identifier <Aux_Qualident>
+
+<Aux_Qualident> ::= <Aux_Qualident> "." <Identifier> |
+
+<IdentifierList> ::= <Identifier> <Aux_IdentifierList>
+
+<Aux_IdentifierList> ::= <Aux_IdentifierList> "," <Identifier> |
+
+<RelOperator> ::= "=" | "#" | "<>" | "<" | "<=" | ">" | ">=" | <IN>
+
+<AddOperator> ::= "+" | "-" | <OR>
 
 <MulOperator> ::= "*" | "/" | <DIV> | <MOD> | <AND> | "&"
 !TODO: Add all letters...
 <Letter> ::= "a" | ... | "z" | "A" | ... | "Z"
 
-<Identifier> ::= <Letter> <R_LetterDigit>
+<Identifier> ::= <Letter> <Aux_Identifier>
 
-<R_LetterDigit> ::= <R_LetterDigit> <Letter> | <R_LetterDigit> <Digit> |
+<Aux_Identifier> ::= <Aux_Identifier> <Letter> | <Aux_Identifier> <Digit> |
 
 <Number> ::= <Integer> | <Real>
 
