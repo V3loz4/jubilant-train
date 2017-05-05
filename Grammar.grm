@@ -8,16 +8,19 @@
 <R_Definition> ::= <R_Definition> <Definition> |
 
 <Definition> ::= CONST <Aux_Definition_ConstantDeclaration> |
-             TYPE { Identifier [ "=" Type ] ";" } |
-             VAR { VariableDeclaration ";" } |
-             ProcedureHeading ";"
+             TYPE <Aux_Definition_Identifier_Type> |
+             VAR <Aux_Definition_VariableDeclaration> |
+             <ProcedureHeading> ";"
 
 <Aux_Definition_ConstantDeclaration> ::= <Aux_Definition_ConstantDeclaration> <ConstantDeclaration> ";" |
 
 <Aux_Definition_Identifier_Type> ::= <Aux_Definition_Identifier_Type> <Identifier> "=" <Type> ";" |
             <Aux_Definition_Identifier_Type> <Identifier> |
 
-<ProgramModule> ::= MODULE Identifier [ Priority ] ";" { Import } Block Identifier "."
+<Aux_Definition_VariableDeclaration> ::= <Aux_Definition_VariableDeclaration> <VariableDeclaration> ";" |
+
+<ProgramModule> ::= MODULE <Identifier> [ Priority ] ";" { Import } Block Identifier "." |
+              MODULE <Identifier> ";" <R_Import> <Block> <Identifier> "." 
 
 <Priority> ::= "[" ConstantExpression "]"
 
