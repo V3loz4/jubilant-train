@@ -1,8 +1,11 @@
 <CompilationUnit> ::= <DefinitionModule> | IMPLEMENTATION <ProgramModule> | <ProgramModule>
 
-<DefinitionModule> ::= DEFINITION MODULE <Identifier> ";" <R_Import> [ Export ] { Definition } END "."
+<DefinitionModule> ::= DEFINITION MODULE <Identifier> ";" <R_Import> <R_Definition> END "." | 
+            DEFINITION MODULE <Identifier> ";" <R_Import> Export <R_Definition> END "."
 
 <R_Import> ::= <R_Import> <Import> | 
+
+<R_Definition> ::= <R_Definition> <Definition> | 
 
 <Definition> ::= CONST { ConstantDeclaration ";" } | 
              TYPE { Identifier [ "=" Type ] ";" } | 
@@ -140,11 +143,9 @@
 !TODO: Add all letters...
 <Letter> ::= "a" | ... | "z" | "A" | ... | "Z"
 
-<Identifier> ::= <Letter> <R_LetterDigit>
+<Identifier> ::= Letter { Letter | Digit }
 
-<R_LetterDigit> ::= <R_LetterDigit> <Letter> | <R_LetterDigit> <Digit> |
-
-<Number> ::= <Integer> | <Real>
+<Number> ::= Integer | Real
 
 <Integer> ::= Digit { Digit } | OctalDigit { OctalDigit } ( "B" | "C" ) | Digit { HexDigit } "H"
 
