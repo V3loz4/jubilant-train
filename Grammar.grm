@@ -1,0 +1,159 @@
+<CompilationUnit> ::= <DefinitionModule> | IMPLEMENTATION <ProgramModule> | <ProgramModule>
+
+<DefinitionModule> ::= DEFINITION MODULE <Identifier> ";" <R_Import> [ Export ] { Definition } END "."
+
+<R_Import> ::= <R_Import> <Import> | 
+
+<Definition> ::= CONST { ConstantDeclaration ";" } | 
+             TYPE { Identifier [ "=" Type ] ";" } | 
+             VAR { VariableDeclaration ";" } | 
+             ProcedureHeading ";"
+
+<ProgramModule> ::= MODULE Identifier [ Priority ] ";" { Import } Block Identifier "."
+
+<Priority> ::= "[" ConstantExpression "]"
+
+<Import> ::= [ FROM Identifier ] IMPORT IdentifierList ";"
+
+<Export> ::= EXPORT [ QUALIFIED ] IdentifierList ";"
+
+<Block> ::= { Declaration } [ BEGIN StatementSequence ] END
+
+<Declaration> ::= CONST { ConstantDeclaration ";" } | 
+               TYPE { TypeDeclaration ";" } | 
+               VAR { VariableDeclaration ";" } | 
+               ProcedureDeclaration ";" | 
+               ModuleDeclaration ";"
+
+<ConstantDeclaration> ::= Identifier "=" ConstantExpression
+
+<TypeDeclaration> ::= Identifier "=" Type
+
+<Type> ::= SimpleType | ArrayType | SetType | PointerType | ProcedureType 
+
+<SimpleType> ::= Qualident | Enumeration | SubrangeType
+
+<Enumeration> ::= "(" IdentifierList ")"
+
+<SubrangeType> ::= "[" ConstantExpression ".." ConstantExpression "]"
+
+<ArrayType> ::= ARRAY SimpleType { "," SimpleType } OF Type
+
+<FieldListSequence> ::= FieldList { ";" FieldList }
+
+<FieldList> ::= [ IdentifierList ":" Type | CASE [ Identifier ":" ] Qualident OF Variant { "|" Variant } [ ELSE FieldListSequence ] ]
+             
+<Variant> ::= CaseLabelList ":" FieldListSequence
+
+<CaseLabelList> ::= CaseLabels { "," CaseLabels }
+
+<CaseLabels> ::= ConstantExpression [".." ConstantExpression ]
+
+<SetType> ::= SET OF SimpleType
+
+<PointerType> ::= POINTER TO Type
+
+<ProcedureType> ::= PROCEDURE FormalTypeList
+
+<FormalTypeList> ::= "(" [ [ VAR ] FormalType { "," [ VAR ] FormalType } ] ")" [ ":" Qualident ]
+
+<VariableDeclaration> ::= IdentifierList ":" Type
+
+<ProcedureDeclaration> ::= ProcedureHeading ";" Block Identifier
+
+<ProcedureHeading> ::= PROCEDURE Identifier [ FormalParameters ]
+
+<FormalParameters> ::= "(" [ FormalParametersSection { "," FormalParametersSection } ] ")" [ ":" Qualident ]
+
+<FormalParametersSection> ::= [ VAR ] IdentifierList ":" FormalType
+
+<FormalType> ::= [ ARRAY OF ] Qualident
+
+<ModuleDeclaration> ::= MODULE Identifier [ Priority ] ";" { Import } [ Export ] Block Identifier
+
+<StatementSequence> ::= Statement { ";" Statement }
+
+<Statement> ::= [ Assignment | 
+            ProcedureCall | 
+            IfStatement | 
+            CaseStatement | 
+            WhileStatement | 
+            RepeatStatement | 
+            ForStatement | 
+            WithStatement | 
+            EXIT | 
+            RETURN [ Expression ] ]
+
+<Assignment> ::= Designator ":=" Expression
+
+<ProcedureCall> ::= Designator [ ActualParameters ]
+
+<IfStatement> ::= IF Expression THEN StatementSequence { ELSIF Expression THEN StatementSequence } [ ELSE StatementSequence ] END
+
+<CaseStatement> ::= CASE Expression OF Case { "|" Case } [ ELSE StatementSequence ] END
+
+<Case> ::= CaseLabelList ":" StatementSequence
+
+<WhileStatement> ::= WHILE Expression DO StatementSequence END
+
+<RepeatStatement> ::= REPEAT StatementSequence UNTIL Expression
+
+<ForStatement> ::= FOR Identifier ":=" Expression TO Expression [ BY ConstantExpression ] DO StatementSequence END
+
+<WithStatement> ::= WITH Designator DO StatementSequence END
+
+<ActualParameters> ::= "(" [ ExpressionList ] ")"
+
+<ExpressionList> ::= Expression { "," Expression }
+
+<Expression> ::= SimpleExpression [ RelOperator SimpleExpression ]
+
+<SimpleExpression> ::= [ "+" | "-" ] Term { AddOperator Term }
+
+<Term> ::= Factor { MulOperator Factor }
+
+<Factor> ::= Number | String | Set | Designator [ ActualParameters ] | "(" Expression ")" | NOT Factor
+
+<ConstantExpression> ::= SimpleConstantExpression [ RelOperator SimpleConstantExpression ]
+
+<SimpleConstantExpression> ::= [ "+" | "-" ] ConstantTerm { AddOperator ConstantTerm }
+
+<ConstantTerm> ::= ConstantFactor { MulOperator ConstantFactor }
+
+<ConstantFactor> ::= Qualident | Number | String | Set | "(" ConstantExpression ")" | NOT ConstantFactor
+
+<Set> ::= [ Qualident ] "{" [ Element { "," Element } ] "}"
+
+<Element> ::= ConstantExpression [ ".." ConstantExpression ]
+
+<Designator> ::= Qualident { "." Identifier | "[" ExpressionList "]" | "^" }
+
+<Qualident> ::= Identifier { "." Identifier }
+
+<IdentifierList> ::= Identifier { "," Identifier }
+
+<RelOperator> ::= "=" | "#" | "<>" | "<" | "<=" | ">" | ">=" | IN
+
+<AddOperator> ::= "+" | "-" | OR
+
+<MulOperator> ::= "*" | "/" | DIV | MOD | AND | "&"
+!TODO: Add all letters...
+<Letter> ::= "a" | ... | "z" | "A" | ... | "Z"
+
+<Identifier> ::= Letter { Letter | Digit }
+
+<Number> ::= Integer | Real
+
+<Integer> ::= Digit { Digit } | OctalDigit { OctalDigit } ( "B" | "C" ) | Digit { HexDigit } "H"
+
+<Real> ::= Digit { Digit } "." { Digit }[ "E" [ "+" | "-" ] Digit { Digit }
+
+<HexDigit> ::= Digit | "A" | "B" | "C" | "D" | "E" | "F"
+
+<Digit> ::= OctalDigit | "8" | "9"
+
+<OctalDigit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7"
+
+<String> ::= """ { Character } """
+
+<Character> ::= ";"
