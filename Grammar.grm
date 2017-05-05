@@ -7,10 +7,15 @@
 
 <R_Definition> ::= <R_Definition> <Definition> |
 
-<Definition> ::= CONST { ConstantDeclaration ";" } |
+<Definition> ::= CONST <Aux_Definition_ConstantDeclaration> |
              TYPE { Identifier [ "=" Type ] ";" } |
              VAR { VariableDeclaration ";" } |
              ProcedureHeading ";"
+
+<Aux_Definition_ConstantDeclaration> ::= <Aux_Definition_ConstantDeclaration> <ConstantDeclaration> ";" |
+
+<Aux_Definition_Identifier_Type> ::= <Aux_Definition_Identifier_Type> <Identifier> "=" <Type> ";" |
+            <Aux_Definition_Identifier_Type> <Identifier> | 
 
 <ProgramModule> ::= MODULE Identifier [ Priority ] ";" { Import } Block Identifier "."
 
