@@ -1,8 +1,11 @@
 <CompilationUnit> ::= <DefinitionModule> | IMPLEMENTATION <ProgramModule> | <ProgramModule>
 
-<DefinitionModule> ::= DEFINITION MODULE <Identifier> ";" <R_Import> [ Export ] { Definition } END "."
+<DefinitionModule> ::= DEFINITION MODULE <Identifier> ";" <R_Import> <R_Definition> END "." | 
+            DEFINITION MODULE <Identifier> ";" <R_Import> Export <R_Definition> END "."
 
 <R_Import> ::= <R_Import> <Import> | 
+
+<R_Definition> ::= <R_Definition> <Definition> | 
 
 <Definition> ::= CONST { ConstantDeclaration ";" } | 
              TYPE { Identifier [ "=" Type ] ";" } | 
