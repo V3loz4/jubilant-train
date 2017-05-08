@@ -1,4 +1,4 @@
-<CompilationUnit> ::= <DefinitionModule> | IMPLEMENTATION <ProgramModule> | <ProgramModule>
+! We<CompilationUnit> ::= <DefinitionModule> | IMPLEMENTATION <ProgramModule> | <ProgramModule>
 
 <DefinitionModule> ::= DEFINITION MODULE <Identifier> ";" <R_Import> <R_Definition> END "." |
             DEFINITION MODULE <Identifier> ";" <R_Import> <Export> <R_Definition> END "."
@@ -57,8 +57,6 @@
 
 <FieldListSequence> ::= <FieldList> { ";" <FieldList> }
 
-
-
 <FieldList> ::= [ <IdentifierList> ":" <Type> | CASE [ <Identifier> ":" ] Qualident OF <Variant> <Aux_FieldList> [ ELSE <FieldListSequence> ] ]
 
 <Aux_FieldList> ::= <Aux_FieldList> "|" <Variant> |
@@ -97,7 +95,9 @@
 
 <ModuleDeclaration> ::= MODULE <Identifier> [ <Priority> ] ";" <R_Import> [ <Export> ] <Block> <Identifier>
 
-<StatementSequence> ::= <Statement> { ";" <Statement> }
+<StatementSequence> ::= <Statement> <Aux_StatementSequence>
+
+<Aux_StatementSequence> ::= <Aux_StatementSequence> ";" <Statement> |
 
 <Statement> ::= [ <Assignment> |
             <ProcedureCall> |
@@ -182,7 +182,7 @@
 
 <MulOperator> ::= "*" | "/" | <DIV> | <MOD> | <AND> | "&"
 !TODO: Add all letters...
-<Letter> ::= "a" | ... | "z" | "A" | ... | "Z"
+<Letter> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k"  | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
 
 <Identifier> ::= <Letter> <Aux_Identifier>
 
@@ -200,6 +200,6 @@
 
 <OctalDigit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7"
 
-<String> ::= """ { Character } """
+<String> ::= " | "" { Character } " | ""
 
-<Character> ::= ";"
+<Character> ::= ...
