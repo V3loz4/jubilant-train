@@ -1,73 +1,85 @@
-! We<CompilationUnit> ::= <DefinitionModule> | IMPLEMENTATION <ProgramModule> | <ProgramModule>
+<CompilationUnit> ::= <DefinitionModule> | IMPLEMENTATION <ProgramModule> | <ProgramModule>
 
-<DefinitionModule> ::= DEFINITION MODULE <Identifier> ";" <R_Import> <R_Definition> END "." |
-            DEFINITION MODULE <Identifier> ";" <R_Import> <Export> <R_Definition> END "."
+<DefinitionModule> ::= DEFINITION MODULE <Identifier> ';' <R_Import> <R_Definition> END '.'
+                    | DEFINITION MODULE <Identifier> ';' <R_Import> <Export> <R_Definition> END '.'
 
 <R_Import> ::= <R_Import> <Import> |
 
 <R_Definition> ::= <R_Definition> <Definition> |
 
-<Definition> ::= CONST <Aux_ConstantDeclaration> |
-             TYPE <Aux_Definition_Identifier_Type> |
-             VAR <Aux_VariableDeclaration> |
-             <ProcedureHeading> ";"
+<Definition> ::= CONST <Aux_ConstantDeclaration> | TYPE <Aux_Definition_Identifier_Type> | VAR <Aux_VariableDeclaration> | <ProcedureHeading> ';'
 
-<Aux_ConstantDeclaration> ::= <Aux_ConstantDeclaration> <ConstantDeclaration> ";" |
+<Aux_ConstantDeclaration> ::= <Aux_ConstantDeclaration> <ConstantDeclaration> ';' |
 
-<Aux_Definition_Identifier_Type> ::= <Aux_Definition_Identifier_Type> <Identifier> "=" <Type> ";" |
-            <Aux_Definition_Identifier_Type> <Identifier> |
+<Aux_Definition_Identifier_Type> ::= <Aux_Definition_Identifier_Type> <Identifier> '=' <Type> ';'
+                                  | <Aux_Definition_Identifier_Type> <Identifier> |
 
-<Aux_VariableDeclaration> ::= <Aux_VariableDeclaration> <VariableDeclaration> ";" |
+<Aux_VariableDeclaration> ::= <Aux_VariableDeclaration> <VariableDeclaration> ';' |
 
-<ProgramModule> ::= MODULE <Identifier> [ Priority ] ";" { Import } Block Identifier "." |
-              MODULE <Identifier> ";" <R_Import> <Block> <Identifier> "."
+<ProgramModule> ::= MODULE <Identifier> <Priority> ';' <R_Import> <Block> <Identifier> '.'
+                 | MODULE <Identifier> ';' <R_Import> <Block> <Identifier> '.'
 
-<Priority> ::= "[" <ConstantExpression> "]"
+<Priority> ::= '[' <ConstantExpression> ']'
 
-<Import> ::= [ FROM <Identifier> ] IMPORT <IdentifierList> ";"
+<Import> ::= FROM <Identifier> IMPORT <IdentifierList> ';'
+          | IMPORT <IdentifierList> ';'
 
-<Export> ::= EXPORT [ QUALIFIED ] <IdentifierList> ";"
+<Export> ::= EXPORT QUALIFIED <IdentifierList> ';'
+          | EXPORT <IdentifierList> ';'
 
-<Block> ::= { <Declaration> } [ BEGIN <StatementSequence> ] END
+<Block> ::= <R_Declaration> BEGIN <StatementSequence> END
+         | <R_Declaration> END
 
-<Declaration> ::= CONST <Aux_ConstantDeclaration> |
-               TYPE <Aux_Declaration_TypeDeclaration> |
-               VAR <Aux_VariableDeclaration> |
-               <ProcedureDeclaration> ";" |
-               <ModuleDeclaration> ";"
+<R_Declaration> ::= <R_Declaration> <Declaration> |
 
-! Substitui: { TypeDeclaration ";" }
-<Aux_Declaration_TypeDeclaration> ::= <Aux_Declaration_TypeDeclaration> <TypeDeclaration> ";" |
+<Declaration> ::= CONST <Aux_ConstantDeclaration> | TYPE <Aux_Declaration_TypeDeclaration>
+               | VAR <Aux_VariableDeclaration>
+               | <ProcedureDeclaration> ';'
+               | <ModuleDeclaration> ';'
 
-<ConstantDeclaration> ::= <Identifier> "=" <ConstantExpression>
+! Substitui: { TypeDeclaration ';' }
+<Aux_Declaration_TypeDeclaration> ::= <Aux_Declaration_TypeDeclaration> <TypeDeclaration> ';' |
 
-<TypeDeclaration> ::= <Identifier> "=" <Type>
+<ConstantDeclaration> ::= <Identifier> '=' <ConstantExpression>
 
-<Type> ::= <SimpleType> | <ArrayType> | <SetType> | <PointerType> | <ProcedureType>
+<TypeDeclaration> ::= <Identifier> '=' <Type>
 
-<SimpleType> ::= <Qualident> | <Enumeration> | <SubrangeType>
+<Type> ::= <SimpleType>
+        | <ArrayType>
+        | <SetType>
+        | <PointerType>
+        | <ProcedureType>
 
-<Enumeration> ::= "(" <IdentifierList> ")"
+<SimpleType> ::= <Qualident>
+              | <Enumeration>
+              | <SubrangeType>
 
-<SubrangeType> ::= "[" <ConstantExpression> ".." <ConstantExpression> "]"
+<Enumeration> ::= '(' <IdentifierList> ')'
 
-<ArrayType> ::= ARRAY <SimpleType> { "," <SimpleType> } OF <Type>
+<SubrangeType> ::= '[' <ConstantExpression> '..' <ConstantExpression> ']'
 
-<Aux_>
+<ArrayType> ::= ARRAY <SimpleType> <Aux_ArrayType> OF <Type>
 
-<FieldListSequence> ::= <FieldList> { ";" <FieldList> }
+<Aux_ArrayType> ::= <Aux_ArrayType> ',' <SimpleType> |
 
-<FieldList> ::= [ <IdentifierList> ":" <Type> | CASE [ <Identifier> ":" ] Qualident OF <Variant> <Aux_FieldList> [ ELSE <FieldListSequence> ] ]
+<FieldListSequence> ::= <FieldList> { ';' <FieldList> }
 
-<Aux_FieldList> ::= <Aux_FieldList> "|" <Variant> |
+<FieldList> ::= <IdentifierList> ':' <Type> | CASE <Identifier> ':' <Qualident> OF <Variant> <Aux_FieldList> ELSE <FieldListSequence>
+             | <IdentifierList> ':' <Type> | CASE <Identifier> ':' <Qualident> OF <Variant> <Aux_FieldList>
+             | <IdentifierList> ':' <Type> | CASE <Qualident> OF <Variant> <Aux_FieldList>
+             | <IdentifierList> ':' <Type> | CASE <Qualident> OF <Variant> <Aux_FieldList> ELSE <FieldListSequence>
+             |
 
-<Variant> ::= <CaseLabelList> ":" <FieldListSequence>
+<Aux_FieldList> ::= <Aux_FieldList> '|' <Variant> |
+
+<Variant> ::= <CaseLabelList> ':' <FieldListSequence>
 
 <CaseLabelList> ::= <CaseLabels> <Aux_CaseLabelList>
 
-<Aux_CaseLabelList> ::= <Aux_CaseLabelList> "," <CaseLabels> |
+<Aux_CaseLabelList> ::= <Aux_CaseLabelList> ',' <CaseLabels> |
 
-<CaseLabels> ::= <ConstantExpression> [".." <ConstantExpression> ]
+<CaseLabels> ::= <ConstantExpression> '..' <ConstantExpression>
+              | <ConstantExpression>
 
 <SetType> ::= SET OF <SimpleType>
 
@@ -75,70 +87,96 @@
 
 <ProcedureType> ::= PROCEDURE <FormalTypeList>
 
-<FormalTypeList> ::= "(" [ [ VAR ] <FormalType> <Aux_FormalTypeList> ] ")" [ ":" <Qualident> ]
+<FormalTypeList> ::= '(' VAR <FormalType> <Aux_FormalTypeList> ')' ':' <Qualident>
+                  | '(' <FormalType> <Aux_FormalTypeList> ')' ':' <Qualident>
+                  | '(' ')' ':' <Qualident>
+                  | '(' VAR <FormalType> <Aux_FormalTypeList> ')'
+                  | '(' <FormalType> <Aux_FormalTypeList> ')'
+                  | '(' ')'
 
-<Aux_FormalTypeList> ::= <Aux_FormalTypeList> "," [ VAR ] <FormalType> |
+<Aux_FormalTypeList> ::= <Aux_FormalTypeList> ',' [ VAR ] <FormalType>
+                      | <Aux_FormalTypeList> ',' <FormalType>
+                      |
 
-<VariableDeclaration> ::= <IdentifierList> ":" <Type>
+<VariableDeclaration> ::= <IdentifierList> ':' <Type>
 
-<ProcedureDeclaration> ::= <ProcedureHeading> ";" <Block> <Identifier>
+<ProcedureDeclaration> ::= <ProcedureHeading> ';' <Block> <Identifier>
 
-<ProcedureHeading> ::= PROCEDURE <Identifier> [ <FormalParameters> ]
+<ProcedureHeading> ::= PROCEDURE <Identifier> <FormalParameters>
+                    | PROCEDURE <Identifier>
 
-<FormalParameters> ::= "(" [ <FormalParametersSection> <Aux_FormalParameters> ] ")" [ ":" <Qualident> ]
+<FormalParameters> ::= '(' <FormalParametersSection> <Aux_FormalParameters> ')' ':' <Qualident>
+                    | '(' <FormalParametersSection> <Aux_FormalParameters> ')'
+                    | '(' ')' ':' <Qualident>
+                    | '(' ')'
 
-<Aux_FormalParameters> ::= <Aux_FormalParameters> "," <FormalParametersSection> |
+<Aux_FormalParameters> ::= <Aux_FormalParameters> ',' <FormalParametersSection> |
 
-<FormalParametersSection> ::= [ VAR ] <IdentifierList> ":" <FormalType>
+<FormalParametersSection> ::= VAR <IdentifierList> ':' <FormalType>
+                           | <IdentifierList> ':' <FormalType>
 
-<FormalType> ::= [ ARRAY OF ] <Qualident>
+<FormalType> ::= ARRAY OF <Qualident>
+              | <Qualident>
 
-<ModuleDeclaration> ::= MODULE <Identifier> [ <Priority> ] ";" <R_Import> [ <Export> ] <Block> <Identifier>
+<ModuleDeclaration> ::= MODULE <Identifier> <Priority> ';' <R_Import> <Export> <Block> <Identifier>
+                     | MODULE <Identifier> ';' <R_Import> <Export> <Block> <Identifier>
+                     | MODULE <Identifier> <Priority> ';' <R_Import> <Block> <Identifier>
+                     | MODULE <Identifier> ';' <R_Import> <Block> <Identifier>
 
 <StatementSequence> ::= <Statement> <Aux_StatementSequence>
 
-<Aux_StatementSequence> ::= <Aux_StatementSequence> ";" <Statement> |
+<Aux_StatementSequence> ::= <Aux_StatementSequence> ';' <Statement> |
 
-<Statement> ::= [ <Assignment> |
-            <ProcedureCall> |
-            <IfStatement> |
-            <CaseStatement> |
-            <WhileStatement> |
-            <RepeatStatement> |
-            <ForStatement> |
-            <WithStatement> |
-            EXIT |
-            RETURN [ <Expression> ] ]
+<Statement> ::= <Assignment>
+             | <ProcedureCall>
+             | <IfStatement>
+             | <CaseStatement>
+             | <WhileStatement>
+             | <RepeatStatement>
+             | <ForStatement>
+             | <WithStatement>
+             | EXIT
+             | RETURN <Expression>
+             | RETURN
+             |
 
-<Assignment> ::= <Designator> ":=" <Expression>
+<Assignment> ::= <Designator> ':=' <Expression>
 
-<ProcedureCall> ::= <Designator> [ <ActualParameters> ]
+<ProcedureCall> ::= <Designator> <ActualParameters>
+                 | <Designator>
 
-<IfStatement> ::= IF <Expression> THEN <StatementSequence> { ELSIF <Expression> THEN <StatementSequence> } [ ELSE <StatementSequence> ] END
+<IfStatement> ::= IF <Expression> THEN <StatementSequence> <Aux_IfStatement> ELSE <StatementSequence> END
+               | IF <Expression> THEN <StatementSequence> <Aux_IfStatement> END
 
-<CaseStatement> ::= CASE <Expression> OF <Case> <Aux_CaseStatement> [ ELSE <StatementSequence> ] END
+<Aux_IfStatement> ::= <Aux_IfStatement> ELSIF <Expression> THEN <StatementSequence> |
 
-<Aux_CaseStatement> ::= <Aux_CaseStatement> "|" <Case> |
+<CaseStatement> ::= CASE <Expression> OF <Case> <Aux_CaseStatement> ELSE <StatementSequence> END
+                 | CASE <Expression> OF <Case> <Aux_CaseStatement> END
 
-<Case> ::= <CaseLabelList> ":" <StatementSequence>
+<Aux_CaseStatement> ::= <Aux_CaseStatement> '|' <Case> |
+
+<Case> ::= <CaseLabelList> ':' <StatementSequence>
 
 <WhileStatement> ::= WHILE <Expression> DO <StatementSequence> END
 
 <RepeatStatement> ::= REPEAT <StatementSequence> UNTIL <Expression>
 
-<ForStatement> ::= FOR <Identifier> ":=" <Expression> TO <Expression> [ BY <ConstantExpression> ] DO <StatementSequence> END
+<ForStatement> ::= FOR <Identifier> ':=' <Expression> TO <Expression> BY <ConstantExpression> DO <StatementSequence> END
+                | CASE <Expression> OF <Case> <Aux_CaseStatement> END
 
 <WithStatement> ::= WITH <Designator> DO <StatementSequence> END
 
-<ActualParameters> ::= "(" [ <ExpressionList> ] ")"
+<ActualParameters> ::= '(' <ExpressionList> ')'
+                    | '(' ')'
 
 <ExpressionList> ::= <Expression> <Aux_ExpressionList>
 
-<Aux_ExpressionList> ::= <Aux_ExpressionList> "," <Expression> |
+<Aux_ExpressionList> ::= <Aux_ExpressionList> ',' <Expression> |
 
-<Expression> ::= <SimpleExpression> [ <RelOperator> <SimpleExpression> ]
+<Expression> ::= <SimpleExpression> <RelOperator> <SimpleExpression>
+              | <SimpleExpression>
 
-<SimpleExpression> ::= [ "+" | "-" ] <Term> <Aux_SimpleExpresions>
+<SimpleExpression> ::= [ '+' | '-' ] <Term> <Aux_SimpleExpresions>
 
 <Aux_SimpleExpresions> ::= <Aux_SimpleExpresions> <AddOperator <Term> |
 
@@ -146,11 +184,20 @@
 
 <Aux_Term> ::= <Aux_Term> <MulOperator> <Factor> |
 
-<Factor> ::= <Number> | <String> | <Set> | <Designator> [ <ActualParameters> ] | "(" <Expression> ")" | NOT <Factor>
+<Factor> ::= <Number>
+          | <String>
+          | <Set>
+          | <Designator> <ActualParameters>
+          | <Designator>
+          | '(' <Expression> ')'
+          | NOT <Factor>
 
-<ConstantExpression> ::= <SimpleConstantExpression> [ <RelOperator> <SimpleConstantExpression> ]
+<ConstantExpression> ::= <SimpleConstantExpression> <RelOperator> <SimpleConstantExpression>
+                      | <SimpleConstantExpression>
 
-<SimpleConstantExpression> ::= [ "+" | "-" ] <ConstantTerm> <Aux_SimpleConstantExpression>
+<SimpleConstantExpression> ::= '+' <ConstantTerm> <Aux_SimpleConstantExpression>
+                            | '-' <ConstantTerm> <Aux_SimpleConstantExpression>
+                            | <ConstantTerm> <Aux_SimpleConstantExpression>
 
 <Aux_SimpleConstantExpression> ::= <Aux_SimpleConstantExpression> <AddOperator> <ConstantTerm> |
 
@@ -158,48 +205,70 @@
 
 <Aux_ConstantTerm> ::= <Aux_ConstantTerm> <MulOperator> <ConstantFactor> |
 
-<ConstantFactor> ::= <Qualident> | <Number> | <String> | <Set> | "(" <ConstantExpression> ")" | NOT <ConstantFactor>
+<ConstantFactor> ::= <Qualident>
+                  | <Number>
+                  | <String>
+                  | <Set>
+                  | '(' <ConstantExpression> ')'
+                  | NOT <ConstantFactor>
 
-<Set> ::= [ <Qualident> ] "{" [ <Element> { "," <Element> } ] "}"
+<Set> ::= <Qualident> '{' <Element> <Aux_Set> '}'
+       | '{' <Element> <Aux_Set> '}'
+       | <Qualident> '{' '}'
+       | '{' '}'
 
-<Element> ::= <ConstantExpression> [ ".." <ConstantExpression> ]
+<Aux_Set> ::= <Aux_Set> ',' <Element> |
+
+<Element> ::= <ConstantExpression> '..' <ConstantExpression>
+           | <ConstantExpression>
 
 <Designator> ::= <Qualident> <Aux_Designator>
 
-<Aux_Designator> ::= <Aux_Designator> "." Identifier | <Aux_Designator> "[" ExpressionList "]" | <Aux_Designator> "^" |
+<Aux_Designator> ::= <Aux_Designator> '.' Identifier
+                  | <Aux_Designator> '[' ExpressionList ']'
+                  | <Aux_Designator> '^'
+                  |
 
 <Qualident> ::= Identifier <Aux_Qualident>
 
-<Aux_Qualident> ::= <Aux_Qualident> "." <Identifier> |
+<Aux_Qualident> ::= <Aux_Qualident> '.' <Identifier> |
 
 <IdentifierList> ::= <Identifier> <Aux_IdentifierList>
 
-<Aux_IdentifierList> ::= <Aux_IdentifierList> "," <Identifier> |
+<Aux_IdentifierList> ::= <Aux_IdentifierList> ',' <Identifier> |
 
-<RelOperator> ::= "=" | "#" | "<>" | "<" | "<=" | ">" | ">=" | <IN>
+<RelOperator> ::= '=' | '#' | '<>' | '<' | '<=' | '>' | '>=' | <IN>
 
-<AddOperator> ::= "+" | "-" | <OR>
+<AddOperator> ::= '+' | '-' | <OR>
 
-<MulOperator> ::= "*" | "/" | <DIV> | <MOD> | <AND> | "&"
+<MulOperator> ::= '*' | '/' | <DIV> | <MOD> | <AND> | '&'
 !TODO: Add all letters...
-<Letter> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k"  | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
+<Letter> ::= 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i'
+          | 'j' | 'k'  | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r'
+          | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z' | 'A'
+          | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J'
+          | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S'
+          | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z'
 
 <Identifier> ::= <Letter> <Aux_Identifier>
 
-<Aux_Identifier> ::= <Aux_Identifier> <Letter> | <Aux_Identifier> <Digit> |
+<Aux_Identifier> ::= <Aux_Identifier> <Letter>
+                  | <Aux_Identifier> <Digit>
+                  |
 
 <Number> ::= <Integer> | <Real>
 
-<Integer> ::= Digit { Digit } | OctalDigit { OctalDigit } ( "B" | "C" ) | Digit { HexDigit } "H"
+<Integer> ::= Digit { Digit } | OctalDigit { OctalDigit } ( 'B' | 'C' ) | Digit { HexDigit } 'H'
 
-<Real> ::= Digit { Digit } "." { Digit }[ "E" [ "+" | "-" ] Digit { Digit }
+<Real> ::= Digit { Digit } '.' { Digit }[ 'E' [ '+' | '-' ] Digit { Digit }
+        | Digit { Digit } '.' { Digit }[ 'E' [ '+' | '-' ] Digit { Digit }
 
-<HexDigit> ::= Digit | "A" | "B" | "C" | "D" | "E" | "F"
+<HexDigit> ::= Digit | 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
 
-<Digit> ::= OctalDigit | "8" | "9"
+<Digit> ::= OctalDigit | '8' | '9'
 
-<OctalDigit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7"
+<OctalDigit> ::= '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7'
 
-<String> ::= " | "" { Character } " | ""
+<String> ::= ' | '' { Character } ' | ''
 
 <Character> ::= ...
