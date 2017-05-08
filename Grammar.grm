@@ -1,50 +1,53 @@
 <CompilationUnit> ::= <DefinitionModule> | IMPLEMENTATION <ProgramModule> | <ProgramModule>
 
 <DefinitionModule> ::= DEFINITION MODULE <Identifier> ";" <R_Import> <R_Definition> END "." |
-            DEFINITION MODULE <Identifier> ";" <R_Import> Export <R_Definition> END "."
+            DEFINITION MODULE <Identifier> ";" <R_Import> <Export> <R_Definition> END "."
 
 <R_Import> ::= <R_Import> <Import> |
 
 <R_Definition> ::= <R_Definition> <Definition> |
 
-<Definition> ::= CONST <Aux_Definition_ConstantDeclaration> |
+<Definition> ::= CONST <Aux_ConstantDeclaration> |
              TYPE <Aux_Definition_Identifier_Type> |
-             VAR <Aux_Definition_VariableDeclaration> |
+             VAR <Aux_VariableDeclaration> |
              <ProcedureHeading> ";"
 
-<Aux_Definition_ConstantDeclaration> ::= <Aux_Definition_ConstantDeclaration> <ConstantDeclaration> ";" |
+<Aux_ConstantDeclaration> ::= <Aux_ConstantDeclaration> <ConstantDeclaration> ";" |
 
 <Aux_Definition_Identifier_Type> ::= <Aux_Definition_Identifier_Type> <Identifier> "=" <Type> ";" |
             <Aux_Definition_Identifier_Type> <Identifier> |
 
-<Aux_Definition_VariableDeclaration> ::= <Aux_Definition_VariableDeclaration> <VariableDeclaration> ";" |
+<Aux_VariableDeclaration> ::= <Aux_VariableDeclaration> <VariableDeclaration> ";" |
 
 <ProgramModule> ::= MODULE <Identifier> [ Priority ] ";" { Import } Block Identifier "." |
-              MODULE <Identifier> ";" <R_Import> <Block> <Identifier> "." 
+              MODULE <Identifier> ";" <R_Import> <Block> <Identifier> "."
 
-<Priority> ::= "[" ConstantExpression "]"
+<Priority> ::= "[" <ConstantExpression> "]"
 
-<Import> ::= [ FROM Identifier ] IMPORT IdentifierList ";"
+<Import> ::= [ FROM <Identifier> ] IMPORT <IdentifierList> ";"
 
-<Export> ::= EXPORT [ QUALIFIED ] IdentifierList ";"
+<Export> ::= EXPORT [ QUALIFIED ] <IdentifierList> ";"
 
-<Block> ::= { Declaration } [ BEGIN StatementSequence ] END
+<Block> ::= { <Declaration> } [ BEGIN <StatementSequence> ] END
 
-<Declaration> ::= CONST { ConstantDeclaration ";" } |
-               TYPE { TypeDeclaration ";" } |
-               VAR { VariableDeclaration ";" } |
-               ProcedureDeclaration ";" |
-               ModuleDeclaration ";"
+<Declaration> ::= CONST <Aux_ConstantDeclaration> |
+               TYPE <Aux_Declaration_TypeDeclaration> |
+               VAR <Aux_VariableDeclaration> |
+               <ProcedureDeclaration> ";" |
+               <ModuleDeclaration> ";"
 
-<ConstantDeclaration> ::= Identifier "=" ConstantExpression
+! Substitui: { TypeDeclaration ";" }
+<Aux_Declaration_TypeDeclaration> ::= <Aux_Declaration_TypeDeclaration> <TypeDeclaration> ";" |
 
-<TypeDeclaration> ::= Identifier "=" Type
+<ConstantDeclaration> ::= <Identifier> "=" <ConstantExpression>
 
-<Type> ::= SimpleType | ArrayType | SetType | PointerType | ProcedureType
+<TypeDeclaration> ::= <Identifier> "=" <Type>
 
-<SimpleType> ::= Qualident | Enumeration | SubrangeType
+<Type> ::= <SimpleType> | <ArrayType> | <SetType> | <PointerType> | <ProcedureType>
 
-<Enumeration> ::= "(" IdentifierList ")"
+<SimpleType> ::= <Qualident> | <Enumeration> | <SubrangeType>
+
+<Enumeration> ::= "(" <IdentifierList> ")"
 
 <SubrangeType> ::= "[" <ConstantExpression> ".." <ConstantExpression> "]"
 
@@ -60,7 +63,7 @@
 
 <Aux_FieldList> ::= <Aux_FieldList> "|" <Variant> |
 
-<Variant> ::= <CaseLabelList> ":" >FieldListSequence<
+<Variant> ::= <CaseLabelList> ":" <FieldListSequence>
 
 <CaseLabelList> ::= <CaseLabels> <Aux_CaseLabelList>
 
