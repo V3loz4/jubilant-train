@@ -1,4 +1,4 @@
-Identifier =  {Letter}{AlphaNumeric}*
+Identifier =  {Letter} ({Letter} | {Digit}) *
 
 !Alphanumeric = {Letter} | {Digit}
 
@@ -9,12 +9,11 @@ Identifier =  {Letter}{AlphaNumeric}*
 Integer = {Digit}+
         | {OctalDigit}+'B'
         | {OctalDigit}+'C'
-        | {Digit}{HexDigit}'H'
+        | {Digit}{HaexDigit}'H'
 
-Number = Integer !| Real
+Number = Integer | Real
 
-!Real = { Digit }+ '.' { Digit }[ 'E' [ '+' | '-' ] { Digit }+
-!        | { Digit }+ '.' { Digit }[ 'E' [ '+' | '-' ] { Digit }+
+Real = {Digit}+'.'{Digit}*('E'('+'|'-')?{Digit}+)?
 
 String = '"' '"' !{ Character } '"'
 
@@ -268,7 +267,7 @@ String = '"' '"' !{ Character } '"'
 !Qualident ::= Identifier { "." Identifier }
 <Qualident> ::= Identifier <Aux_Qualident>
 
-<Aux_Qualident> ::= <Aux_Qualident> '.' Identifier |
+<Aux_Qualident> ::= <Aux_Qualident> '.' Identifier | <>
 
 <IdentifierList> ::= Identifier <Aux_IdentifierList>
 
