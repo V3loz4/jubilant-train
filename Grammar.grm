@@ -1,7 +1,33 @@
+Identifier =  {Letter}{AlphaNumeric}*
+
+!Alphanumeric = {Letter} | {Digit}
+
+{OctalDigit} = [01234567] !'0' | '1' | '2' | '3' | '4' | '5' | '6' | '7'
+
+{HexDigit} = {Digit} + [ABCDEF] !| 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
+
+Integer = {Digit}+
+        | {OctalDigit}+'B'
+        | {OctalDigit}+'C'
+        | {Digit}{HexDigit}'H'
+
+Number = Integer | Real
+
+!Real = { Digit }+ '.' { Digit }[ 'E' [ '+' | '-' ] { Digit }+
+!        | { Digit }+ '.' { Digit }[ 'E' [ '+' | '-' ] { Digit }+
+
+String = '"' '"' !{ Character } '"'
+
+!Character = ...
+
+"Start Symbol" =  <CompilationUnit>
+
+!Regras da Linguagem
+
 <CompilationUnit> ::= <DefinitionModule> | IMPLEMENTATION <ProgramModule> | <ProgramModule>
 
-<DefinitionModule> ::= DEFINITION MODULE <Identifier> ';' <R_Import> <R_Definition> END '.'
-                    | DEFINITION MODULE <Identifier> ';' <R_Import> <Export> <R_Definition> END '.'
+<DefinitionModule> ::= DEFINITION MODULE Identifier ';' <R_Import> <R_Definition> END '.'
+                    | DEFINITION MODULE Identifier ';' <R_Import> <Export> <R_Definition> END '.'
 
 <R_Import> ::= <R_Import> <Import> |
 
@@ -11,17 +37,17 @@
 
 <Aux_ConstantDeclaration> ::= <Aux_ConstantDeclaration> <ConstantDeclaration> ';' |
 
-<Aux_Definition_Identifier_Type> ::= <Aux_Definition_Identifier_Type> <Identifier> '=' <Type> ';'
-                                  | <Aux_Definition_Identifier_Type> <Identifier> |
+<Aux_Definition_Identifier_Type> ::= <Aux_Definition_Identifier_Type> Identifier '=' <Type> ';'
+                                  | <Aux_Definition_Identifier_Type> Identifier |
 
 <Aux_VariableDeclaration> ::= <Aux_VariableDeclaration> <VariableDeclaration> ';' |
 
-<ProgramModule> ::= MODULE <Identifier> <Priority> ';' <R_Import> <Block> <Identifier> '.'
-                 | MODULE <Identifier> ';' <R_Import> <Block> <Identifier> '.'
+<ProgramModule> ::= MODULE Identifier <Priority> ';' <R_Import> <Block> Identifier '.'
+                 | MODULE Identifier ';' <R_Import> <Block> Identifier '.'
 
 <Priority> ::= '[' <ConstantExpression> ']'
 
-<Import> ::= FROM <Identifier> IMPORT <IdentifierList> ';'
+<Import> ::= FROM Identifier IMPORT <IdentifierList> ';'
           | IMPORT <IdentifierList> ';'
 
 <Export> ::= EXPORT QUALIFIED <IdentifierList> ';'
@@ -40,9 +66,9 @@
 ! Substitui: { TypeDeclaration ';' }
 <Aux_Declaration_TypeDeclaration> ::= <Aux_Declaration_TypeDeclaration> <TypeDeclaration> ';' |
 
-<ConstantDeclaration> ::= <Identifier> '=' <ConstantExpression>
+<ConstantDeclaration> ::= Identifier '=' <ConstantExpression>
 
-<TypeDeclaration> ::= <Identifier> '=' <Type>
+<TypeDeclaration> ::= Identifier '=' <Type>
 
 <Type> ::= <SimpleType>
         | <ArrayType>
@@ -62,12 +88,15 @@
 
 <Aux_ArrayType> ::= <Aux_ArrayType> ',' <SimpleType> |
 
-<FieldListSequence> ::= <FieldList> { ';' <FieldList> }
+<FieldListSequence> ::= <FieldList> <Aux_FieldListSequence>
 
-<FieldList> ::= <IdentifierList> ':' <Type> | CASE <Identifier> ':' <Qualident> OF <Variant> <Aux_FieldList> ELSE <FieldListSequence>
-             | <IdentifierList> ':' <Type> | CASE <Identifier> ':' <Qualident> OF <Variant> <Aux_FieldList>
-             | <IdentifierList> ':' <Type> | CASE <Qualident> OF <Variant> <Aux_FieldList>
-             | <IdentifierList> ':' <Type> | CASE <Qualident> OF <Variant> <Aux_FieldList> ELSE <FieldListSequence>
+<Aux_FieldListSequence> ::= <Aux_FieldListSequence> ';' <FieldList> |
+
+<FieldList> ::= <IdentifierList> ':' <Type>
+             | CASE Identifier ':' <Qualident> OF <Variant> <Aux_FieldList> ELSE <FieldListSequence>
+             | CASE Identifier ':' <Qualident> OF <Variant> <Aux_FieldList>
+             | CASE <Qualident> OF <Variant> <Aux_FieldList>
+             | CASE <Qualident> OF <Variant> <Aux_FieldList> ELSE <FieldListSequence>
              |
 
 <Aux_FieldList> ::= <Aux_FieldList> '|' <Variant> |
@@ -94,16 +123,16 @@
                   | '(' <FormalType> <Aux_FormalTypeList> ')'
                   | '(' ')'
 
-<Aux_FormalTypeList> ::= <Aux_FormalTypeList> ',' [ VAR ] <FormalType>
+<Aux_FormalTypeList> ::= <Aux_FormalTypeList> ',' VAR <FormalType>
                       | <Aux_FormalTypeList> ',' <FormalType>
                       |
 
 <VariableDeclaration> ::= <IdentifierList> ':' <Type>
 
-<ProcedureDeclaration> ::= <ProcedureHeading> ';' <Block> <Identifier>
+<ProcedureDeclaration> ::= <ProcedureHeading> ';' <Block> Identifier
 
-<ProcedureHeading> ::= PROCEDURE <Identifier> <FormalParameters>
-                    | PROCEDURE <Identifier>
+<ProcedureHeading> ::= PROCEDURE Identifier <FormalParameters>
+                    | PROCEDURE Identifier
 
 <FormalParameters> ::= '(' <FormalParametersSection> <Aux_FormalParameters> ')' ':' <Qualident>
                     | '(' <FormalParametersSection> <Aux_FormalParameters> ')'
@@ -118,10 +147,10 @@
 <FormalType> ::= ARRAY OF <Qualident>
               | <Qualident>
 
-<ModuleDeclaration> ::= MODULE <Identifier> <Priority> ';' <R_Import> <Export> <Block> <Identifier>
-                     | MODULE <Identifier> ';' <R_Import> <Export> <Block> <Identifier>
-                     | MODULE <Identifier> <Priority> ';' <R_Import> <Block> <Identifier>
-                     | MODULE <Identifier> ';' <R_Import> <Block> <Identifier>
+<ModuleDeclaration> ::= MODULE Identifier <Priority> ';' <R_Import> <Export> <Block> Identifier
+                     | MODULE Identifier ';' <R_Import> <Export> <Block> Identifier
+                     | MODULE Identifier <Priority> ';' <R_Import> <Block> Identifier
+                     | MODULE Identifier ';' <R_Import> <Block> Identifier
 
 <StatementSequence> ::= <Statement> <Aux_StatementSequence>
 
@@ -161,7 +190,7 @@
 
 <RepeatStatement> ::= REPEAT <StatementSequence> UNTIL <Expression>
 
-<ForStatement> ::= FOR <Identifier> ':=' <Expression> TO <Expression> BY <ConstantExpression> DO <StatementSequence> END
+<ForStatement> ::= FOR Identifier ':=' <Expression> TO <Expression> BY <ConstantExpression> DO <StatementSequence> END
                 | CASE <Expression> OF <Case> <Aux_CaseStatement> END
 
 <WithStatement> ::= WITH <Designator> DO <StatementSequence> END
@@ -176,16 +205,18 @@
 <Expression> ::= <SimpleExpression> <RelOperator> <SimpleExpression>
               | <SimpleExpression>
 
-<SimpleExpression> ::= [ '+' | '-' ] <Term> <Aux_SimpleExpresions>
+<SimpleExpression> ::= '+' <Term> <Aux_SimpleExpresions>
+                    | '-' <Term> <Aux_SimpleExpresions>
+                    | <Term> <Aux_SimpleExpresions>
 
-<Aux_SimpleExpresions> ::= <Aux_SimpleExpresions> <AddOperator <Term> |
+<Aux_SimpleExpresions> ::= <Aux_SimpleExpresions> <AddOperator> <Term> |
 
 <Term> ::= <Factor> <Aux_Term>
 
 <Aux_Term> ::= <Aux_Term> <MulOperator> <Factor> |
 
-<Factor> ::= <Number>
-          | <String>
+<Factor> ::= Number
+          | String
           | <Set>
           | <Designator> <ActualParameters>
           | <Designator>
@@ -201,13 +232,13 @@
 
 <Aux_SimpleConstantExpression> ::= <Aux_SimpleConstantExpression> <AddOperator> <ConstantTerm> |
 
-<ConstantTerm> ::= <ConstantFactor> <Aux_Constant_Term>
+<ConstantTerm> ::= <ConstantFactor> <Aux_ConstantTerm>
 
 <Aux_ConstantTerm> ::= <Aux_ConstantTerm> <MulOperator> <ConstantFactor> |
 
 <ConstantFactor> ::= <Qualident>
-                  | <Number>
-                  | <String>
+                  | Number
+                  | String
                   | <Set>
                   | '(' <ConstantExpression> ')'
                   | NOT <ConstantFactor>
@@ -231,39 +262,14 @@
 
 <Qualident> ::= Identifier <Aux_Qualident>
 
-<Aux_Qualident> ::= <Aux_Qualident> '.' <Identifier> |
+<Aux_Qualident> ::= <Aux_Qualident> '.' Identifier |
 
-<IdentifierList> ::= <Identifier> <Aux_IdentifierList>
+<IdentifierList> ::= Identifier <Aux_IdentifierList>
 
-<Aux_IdentifierList> ::= <Aux_IdentifierList> ',' <Identifier> |
+<Aux_IdentifierList> ::= <Aux_IdentifierList> ',' Identifier |
 
-<RelOperator> ::= '=' | '#' | '<>' | '<' | '<=' | '>' | '>=' | <IN>
+<RelOperator> ::= '=' | '#' | '<>' | '<' | '<=' | '>' | '>=' | IN
 
-<AddOperator> ::= '+' | '-' | <OR>
+<AddOperator> ::= '+' | '-' | OR
 
-<MulOperator> ::= '*' | '/' | <DIV> | <MOD> | <AND> | '&'
-!TODO: Add all letters...
-{Letter}
-
-<Identifier> ::= <Letter> <Aux_Identifier>
-
-<Aux_Identifier> ::= <Aux_Identifier> <Letter>
-                  | <Aux_Identifier> <Digit>
-                  |
-
-<Number> ::= <Integer> | <Real>
-
-<Integer> ::= Digit { Digit } | OctalDigit { OctalDigit } ( 'B' | 'C' ) | Digit { HexDigit } 'H'
-
-<Real> ::= Digit { Digit } '.' { Digit }[ 'E' [ '+' | '-' ] Digit { Digit }
-        | Digit { Digit } '.' { Digit }[ 'E' [ '+' | '-' ] Digit { Digit }
-
-<HexDigit> ::= Digit | 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
-
-<Digit> ::= OctalDigit | '8' | '9'
-
-<OctalDigit> ::= '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7'
-
-<String> ::= ' | '' { Character } ' | ''
-
-<Character> ::= ...
+<MulOperator> ::= '*' | '/' | DIV | MOD | AND | '&'
