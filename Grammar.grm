@@ -11,7 +11,7 @@ Integer = {Digit}+
         | {OctalDigit}+'C'
         | {Digit}{HexDigit}'H'
 
-Number = Integer | Real
+Number = Integer !| Real
 
 !Real = { Digit }+ '.' { Digit }[ 'E' [ '+' | '-' ] { Digit }+
 !        | { Digit }+ '.' { Digit }[ 'E' [ '+' | '-' ] { Digit }+
@@ -33,7 +33,10 @@ String = '"' '"' !{ Character } '"'
 
 <R_Definition> ::= <R_Definition> <Definition> |
 
-<Definition> ::= CONST <Aux_ConstantDeclaration> | TYPE <Aux_Definition_Identifier_Type> | VAR <Aux_VariableDeclaration> | <ProcedureHeading> ';'
+<Definition> ::= CONST <Aux_ConstantDeclaration>
+              | TYPE <Aux_Definition_Identifier_Type>
+              | VAR <Aux_VariableDeclaration>
+              | <ProcedureHeading> ';'
 
 <Aux_ConstantDeclaration> ::= <Aux_ConstantDeclaration> <ConstantDeclaration> ';' |
 
@@ -58,7 +61,8 @@ String = '"' '"' !{ Character } '"'
 
 <R_Declaration> ::= <R_Declaration> <Declaration> |
 
-<Declaration> ::= CONST <Aux_ConstantDeclaration> | TYPE <Aux_Declaration_TypeDeclaration>
+<Declaration> ::= CONST <Aux_ConstantDeclaration>
+               | TYPE <Aux_Declaration_TypeDeclaration>
                | VAR <Aux_VariableDeclaration>
                | <ProcedureDeclaration> ';'
                | <ModuleDeclaration> ';'
@@ -190,8 +194,9 @@ String = '"' '"' !{ Character } '"'
 
 <RepeatStatement> ::= REPEAT <StatementSequence> UNTIL <Expression>
 
+!                  FOR Identifier ":=" Expression TO Expression [ BY ConstantExpression ] DO StatementSequence END
 <ForStatement> ::= FOR Identifier ':=' <Expression> TO <Expression> BY <ConstantExpression> DO <StatementSequence> END
-                | CASE <Expression> OF <Case> <Aux_CaseStatement> END
+                | FOR Identifier ':=' <Expression> TO <Expression> DO <StatementSequence> END
 
 <WithStatement> ::= WITH <Designator> DO <StatementSequence> END
 
@@ -260,6 +265,7 @@ String = '"' '"' !{ Character } '"'
                   | <Aux_Designator> '^'
                   |
 
+!Qualident ::= Identifier { "." Identifier }
 <Qualident> ::= Identifier <Aux_Qualident>
 
 <Aux_Qualident> ::= <Aux_Qualident> '.' Identifier |
