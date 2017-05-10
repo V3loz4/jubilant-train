@@ -60,7 +60,7 @@ String = '"' {Character}* '"'
 <Block> ::= <R_Declaration> BEGIN <StatementSequence> END
          | <R_Declaration> END
 
-<R_Declaration> ::= <R_Declaration> <Declaration> |
+<R_Declaration> ::= <R_Declaration><Declaration> |
 
 <Declaration> ::= CONST <Aux_ConstantDeclaration>
                | TYPE <Aux_Declaration_TypeDeclaration>
@@ -88,7 +88,7 @@ String = '"' {Character}* '"'
 
 <Enumeration> ::= '(' <IdentifierList> ')'
 
-<TypeRecord> ::= RECORD <> END ';'
+<TypeRecord> ::= RECORD <FieldListSequence> END
 
 <SubrangeType> ::= '[' <ConstantExpression> '..' <ConstantExpression> ']'
 
@@ -268,7 +268,7 @@ String = '"' {Character}* '"'
 <Designator> ::= <Qualident> <Aux_Designator>
 
 <Aux_Designator> ::= <Aux_Designator> '.' Identifier
-                  | <Aux_Designator> '[' ExpressionList ']'
+                  | <Aux_Designator> '[' <ExpressionList> ']'
                   | <Aux_Designator> '^'
                   |
 
