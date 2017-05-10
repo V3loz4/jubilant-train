@@ -17,9 +17,9 @@ Identifier =  {Letter}{Alphanumeric}*
 
 Number = ({Digit}+ | ('0' | '1' | '2' | '3' | '4' | '5' | '6' | '7')+ ( 'B' | 'C' ) | {Digit} ({Digit} | 'A' | 'B' | 'C' | 'D'| 'E' | 'F')* 'H') | ( {Digit}+ '.' {Digit}*  [ 'E' ] [ '+' | '-' ] {Digit}+ )
 
-String = '"' '"' !{ Character } '"'
+String = '"' {Character}* '"'
 
-!Character = ...
+{Character} = {Printable} - ["]
 
 "Start Symbol" =  <CompilationUnit>
 
@@ -80,12 +80,15 @@ String = '"' '"' !{ Character } '"'
         | <SetType>
         | <PointerType>
         | <ProcedureType>
+        | <TypeRecord>
 
 <SimpleType> ::= <Qualident>
               | <Enumeration>
               | <SubrangeType>
 
 <Enumeration> ::= '(' <IdentifierList> ')'
+
+<TypeRecord> ::= RECORD <> END ';'
 
 <SubrangeType> ::= '[' <ConstantExpression> '..' <ConstantExpression> ']'
 
@@ -169,10 +172,13 @@ String = '"' '"' !{ Character } '"'
              | <RepeatStatement>
              | <ForStatement>
              | <WithStatement>
+             | <LoopStatement>
              | EXIT
              | RETURN <Expression>
              | RETURN
              |
+
+<LoopStatement> ::= LOOP <StatementSequence> END ';'
 
 <Assignment> ::= <Designator> ':=' <Expression>
 
