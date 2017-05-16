@@ -22,6 +22,8 @@ String = '"' {Character}* '"'
 {Character} = {Printable} - ["]
 
 "Start Symbol" =  <CompilationUnit>
+               
+!-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 !Regras da Linguagem
 
@@ -39,12 +41,15 @@ String = '"' {Character}* '"'
               | VAR <Aux_VariableDeclaration>
               | <ProcedureHeading> ';'
 
-<Aux_ConstantDeclaration> ::= <Aux_ConstantDeclaration> <ConstantDeclaration> ';' |
+<Aux_ConstantDeclaration> ::= <Aux_ConstantDeclaration> <ConstantDeclaration> ';' 
+                           |
 
 <Aux_Definition_Identifier_Type> ::= <Aux_Definition_Identifier_Type> Identifier '=' <Type> ';'
-                                  | <Aux_Definition_Identifier_Type> Identifier |
+                                  | <Aux_Definition_Identifier_Type> Identifier 
+                                  |
 
-<Aux_VariableDeclaration> ::= <Aux_VariableDeclaration> <VariableDeclaration> ';' |
+<Aux_VariableDeclaration> ::= <Aux_VariableDeclaration> <VariableDeclaration> ';' 
+                           |
 
 <ProgramModule> ::= MODULE Identifier <Priority> ';' <R_Import> <Block> Identifier '.'
                  | MODULE Identifier ';' <R_Import> <Block> Identifier '.'
@@ -60,7 +65,8 @@ String = '"' {Character}* '"'
 <Block> ::= <R_Declaration> BEGIN <StatementSequence> END
          | <R_Declaration> END
 
-<R_Declaration> ::= <R_Declaration><Declaration> |
+<R_Declaration> ::= <R_Declaration><Declaration> 
+                 |
 
 <Declaration> ::= CONST <Aux_ConstantDeclaration>
                | TYPE <Aux_Declaration_TypeDeclaration>
@@ -69,7 +75,8 @@ String = '"' {Character}* '"'
                | <ModuleDeclaration> ';'
 
 ! Substitui: { TypeDeclaration ';' }
-<Aux_Declaration_TypeDeclaration> ::= <Aux_Declaration_TypeDeclaration> <TypeDeclaration> ';' |
+<Aux_Declaration_TypeDeclaration> ::= <Aux_Declaration_TypeDeclaration> <TypeDeclaration> ';' 
+                                   |
 
 <ConstantDeclaration> ::= Identifier '=' <ConstantExpression>
 
@@ -94,7 +101,8 @@ String = '"' {Character}* '"'
 
 <ArrayType> ::= ARRAY <SimpleType> <Aux_ArrayType> OF <Type>
 
-<Aux_ArrayType> ::= <Aux_ArrayType> ',' <SimpleType> |
+<Aux_ArrayType> ::= <Aux_ArrayType> ',' <SimpleType> 
+                 |
 
 <FieldListSequence> ::= <FieldListSequence> ';' <FieldList> 
                      | <FieldList>
@@ -106,13 +114,13 @@ String = '"' {Character}* '"'
              | CASE <Qualident> OF <Variant> <Aux_FieldList> ELSE <FieldListSequence>
              |
 
-<Aux_FieldList> ::= <Aux_FieldList> '|' <Variant> |
+<Aux_FieldList> ::= <Aux_FieldList> '|' <Variant> 
+                 |
 
 <Variant> ::= <CaseLabelList> ':' <FieldListSequence>
 
-<CaseLabelList> ::= <CaseLabels> <Aux_CaseLabelList>
-
-<Aux_CaseLabelList> ::= <Aux_CaseLabelList> ',' <CaseLabels> |
+<CaseLabelList> ::= <CaseLabelList> ',' <CaseLabels> 
+                     | <CaseLabels>
 
 <CaseLabels> ::= <ConstantExpression> '..' <ConstantExpression>
               | <ConstantExpression>
@@ -146,7 +154,8 @@ String = '"' {Character}* '"'
                     | '(' ')' ':' <Qualident>
                     | '(' ')'
 
-<Aux_FormalParameters> ::= <Aux_FormalParameters> ',' <FormalParametersSection> |
+<Aux_FormalParameters> ::= <Aux_FormalParameters> ',' <FormalParametersSection> 
+                        |
 
 <FormalParametersSection> ::= VAR <IdentifierList> ':' <FormalType>
                            | <IdentifierList> ':' <FormalType>
@@ -159,9 +168,8 @@ String = '"' {Character}* '"'
                      | MODULE Identifier <Priority> ';' <R_Import> <Block> Identifier
                      | MODULE Identifier ';' <R_Import> <Block> Identifier
 
-<StatementSequence> ::= <Statement> <Aux_StatementSequence>
-
-<Aux_StatementSequence> ::= <Aux_StatementSequence> ';' <Statement> |
+<StatementSequence> ::= <StatementSequence> ';' <Statement> 
+                         | <Statement>
 
 <Statement> ::= <Assignment>
              | <ProcedureCall>
@@ -187,12 +195,14 @@ String = '"' {Character}* '"'
 <IfStatement> ::= IF <Expression> THEN <StatementSequence> <Aux_IfStatement> ELSE <StatementSequence> END
                | IF <Expression> THEN <StatementSequence> <Aux_IfStatement> END
 
-<Aux_IfStatement> ::= <Aux_IfStatement> ELSIF <Expression> THEN <StatementSequence> |
+<Aux_IfStatement> ::= <Aux_IfStatement> ELSIF <Expression> THEN <StatementSequence> 
+                   |
 
 <CaseStatement> ::= CASE <Expression> OF <Case> <Aux_CaseStatement> ELSE <StatementSequence> END
                  | CASE <Expression> OF <Case> <Aux_CaseStatement> END
 
-<Aux_CaseStatement> ::= <Aux_CaseStatement> '|' <Case> |
+<Aux_CaseStatement> ::= <Aux_CaseStatement> '|' <Case> 
+                     |
 
 <Case> ::= <CaseLabelList> ':' <StatementSequence>
 
@@ -209,9 +219,8 @@ String = '"' {Character}* '"'
 <ActualParameters> ::= '(' <ExpressionList> ')'
                     | '(' ')'
 
-<ExpressionList> ::= <Expression> <Aux_ExpressionList>
-
-<Aux_ExpressionList> ::= <Aux_ExpressionList> ',' <Expression> |
+<ExpressionList> ::= <ExpressionList> ',' <Expression> 
+                  | <Expression>
 
 <Expression> ::= <SimpleExpression> <RelOperator> <SimpleExpression>
               | <SimpleExpression>
@@ -220,11 +229,11 @@ String = '"' {Character}* '"'
                     | '-' <Term> <Aux_SimpleExpresions>
                     | <Term> <Aux_SimpleExpresions>
 
-<Aux_SimpleExpresions> ::= <Aux_SimpleExpresions> <AddOperator> <Term> |
+<Aux_SimpleExpresions> ::= <Aux_SimpleExpresions> <AddOperator> <Term> 
+                        |
 
-<Term> ::= <Factor> <Aux_Term>
-
-<Aux_Term> ::= <Aux_Term> <MulOperator> <Factor> |
+<Term> ::= <Term> <MulOperator> <Factor>
+        | <Factor>
 
 <Factor> ::= Number
           | String
@@ -241,11 +250,11 @@ String = '"' {Character}* '"'
                             | '-' <ConstantTerm> <Aux_SimpleConstantExpression>
                             | <ConstantTerm> <Aux_SimpleConstantExpression>
 
-<Aux_SimpleConstantExpression> ::= <Aux_SimpleConstantExpression> <AddOperator> <ConstantTerm> |
+<Aux_SimpleConstantExpression> ::= <Aux_SimpleConstantExpression> <AddOperator> <ConstantTerm> 
+                                |
 
-<ConstantTerm> ::= <ConstantFactor> <Aux_ConstantTerm>
-
-<Aux_ConstantTerm> ::= <Aux_ConstantTerm> <MulOperator> <ConstantFactor> |
+<ConstantTerm> ::= <ConstantTerm> <MulOperator> <ConstantFactor>
+                | <ConstantFactor>
 
 <ConstantFactor> ::= <Qualident>
                   | Number
@@ -259,29 +268,39 @@ String = '"' {Character}* '"'
        | <Qualident> '{' '}'
        | '{' '}'
 
-<Aux_Set> ::= <Aux_Set> ',' <Element> |
+<Aux_Set> ::= <Aux_Set> ',' <Element> 
+           |
 
 <Element> ::= <ConstantExpression> '..' <ConstantExpression>
            | <ConstantExpression>
 
-<Designator> ::= <Qualident> <Aux_Designator>
-
-<Aux_Designator> ::= <Aux_Designator> '.' Identifier
-                  | <Aux_Designator> '[' <ExpressionList> ']'
-                  | <Aux_Designator> '^'
-                  |
+<Designator> ::= <Qualident>
+              | <Qualident> '[' <ExpressionList> ']'
+              | <Qualident> '^'
 
 !Qualident ::= Identifier { "." Identifier }
-<Qualident> ::= Identifier <Aux_Qualident>
+<Qualident> ::= <Qualident> '.' Identifier
+             | Identifier
 
-<Aux_Qualident> ::= <Aux_Qualident> '.' Identifier | <>
+<IdentifierList> ::= <IdentifierList> ',' Identifier
+                  | Identifier
 
-<IdentifierList> ::= Identifier <Aux_IdentifierList>
+<RelOperator> ::= '=' 
+               | '#' 
+               | '<>' 
+               | '<' 
+               | '<=' 
+               | '>' 
+               | '>=' 
+               | IN
 
-<Aux_IdentifierList> ::= <Aux_IdentifierList> ',' Identifier |
+<AddOperator> ::= '+' 
+               | '-' 
+               | OR
 
-<RelOperator> ::= '=' | '#' | '<>' | '<' | '<=' | '>' | '>=' | IN
-
-<AddOperator> ::= '+' | '-' | OR
-
-<MulOperator> ::= '*' | '/' | DIV | MOD | AND | '&'
+<MulOperator> ::= '*' 
+               | '/' 
+               | DIV 
+               | MOD 
+               | AND 
+               | '&'
