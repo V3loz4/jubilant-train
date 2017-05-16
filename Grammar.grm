@@ -108,14 +108,22 @@ String = '"' {Character}* '"'
                      | <FieldList>
 
 <FieldList> ::= <IdentifierList> ':' <Type>
-             | CASE Identifier ':' <Qualident> OF <Variant> <Aux_FieldList> ELSE <FieldListSequence>
-             | CASE Identifier ':' <Qualident> OF <Variant> <Aux_FieldList>
-             | CASE <Qualident> OF <Variant> <Aux_FieldList>
-             | CASE <Qualident> OF <Variant> <Aux_FieldList> ELSE <FieldListSequence>
-             |
+             | CASE Identifier ':' <Qualident> OF <Aux_FieldList> ELSE <FieldListSequence>
+             | CASE Identifier ':' <Qualident> OF  <Aux_FieldList>
+             | CASE <Qualident> OF  <Aux_FieldList>
+             | CASE <Qualident> OF  <Aux_FieldList> ELSE <FieldListSequence>
+             | 
 
-<Aux_FieldList> ::= <Aux_FieldList> '|' <Variant> 
-                 |
+!<FieldList> ::= <IdentifierList> ':' <Type>
+!             | CASE Identifier ':' <Qualident> OF <Aux_FieldList> <z>
+!             | CASE <Qualident> OF  <Aux_FieldList> <z>
+!             | 
+!             
+!<z>  ::= ELSE <FieldListSequence>
+!      |
+      
+<Aux_FieldList> ::= <Aux_FieldList> '|' <Variant>
+                 | <Variant>
 
 <Variant> ::= <CaseLabelList> ':' <FieldListSequence>
 
