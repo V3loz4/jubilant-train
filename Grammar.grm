@@ -96,9 +96,8 @@ String = '"' {Character}* '"'
 
 <Aux_ArrayType> ::= <Aux_ArrayType> ',' <SimpleType> |
 
-<FieldListSequence> ::= <FieldList> <Aux_FieldListSequence>
-
-<Aux_FieldListSequence> ::= <Aux_FieldListSequence> ';' <FieldList> |
+<FieldListSequence> ::= <FieldListSequence> ';' <FieldList> 
+                     | <FieldList>
 
 <FieldList> ::= <IdentifierList> ':' <Type>
              | CASE Identifier ':' <Qualident> OF <Variant> <Aux_FieldList> ELSE <FieldListSequence>
