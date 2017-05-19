@@ -22,7 +22,7 @@ String = '"' {Character}* '"'
 {Character} = {Printable} - ["]
 
 "Start Symbol" =  <CompilationUnit>
-               
+
 !-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 !Regras da Linguagem
@@ -41,14 +41,14 @@ String = '"' {Character}* '"'
               | VAR <Aux_VariableDeclaration>
               | <ProcedureHeading> ';'
 
-<Aux_ConstantDeclaration> ::= <Aux_ConstantDeclaration> <ConstantDeclaration> ';' 
+<Aux_ConstantDeclaration> ::= <Aux_ConstantDeclaration> <ConstantDeclaration> ';'
                            |
 
 <Aux_Definition_Identifier_Type> ::= <Aux_Definition_Identifier_Type> Identifier '=' <Type> ';'
-                                  | <Aux_Definition_Identifier_Type> Identifier 
+                                  | <Aux_Definition_Identifier_Type> Identifier
                                   |
 
-<Aux_VariableDeclaration> ::= <Aux_VariableDeclaration> <VariableDeclaration> ';' 
+<Aux_VariableDeclaration> ::= <Aux_VariableDeclaration> <VariableDeclaration> ';'
                            |
 
 <ProgramModule> ::= MODULE Identifier <Priority> ';' <R_Import> <Block> Identifier '.'
@@ -65,7 +65,7 @@ String = '"' {Character}* '"'
 <Block> ::= <R_Declaration> BEGIN <StatementSequence> END
          | <R_Declaration> END
 
-<R_Declaration> ::= <R_Declaration><Declaration> 
+<R_Declaration> ::= <R_Declaration><Declaration>
                  |
 
 <Declaration> ::= CONST <Aux_ConstantDeclaration>
@@ -75,7 +75,7 @@ String = '"' {Character}* '"'
                | <ModuleDeclaration> ';'
 
 ! Substitui: { TypeDeclaration ';' }
-<Aux_Declaration_TypeDeclaration> ::= <Aux_Declaration_TypeDeclaration> <TypeDeclaration> ';' 
+<Aux_Declaration_TypeDeclaration> ::= <Aux_Declaration_TypeDeclaration> <TypeDeclaration> ';'
                                    |
 
 <ConstantDeclaration> ::= Identifier '=' <ConstantExpression>
@@ -101,33 +101,25 @@ String = '"' {Character}* '"'
 
 <ArrayType> ::= ARRAY <SimpleType> <Aux_ArrayType> OF <Type>
 
-<Aux_ArrayType> ::= <Aux_ArrayType> ',' <SimpleType> 
+<Aux_ArrayType> ::= <Aux_ArrayType> ',' <SimpleType>
                  |
 
-<FieldListSequence> ::= <FieldListSequence> ';' <FieldList> 
+<FieldListSequence> ::= <FieldListSequence> ';' <FieldList>
                      | <FieldList>
 
 <FieldList> ::= <IdentifierList> ':' <Type>
-             | CASE Identifier ':' <Qualident> OF <Aux_FieldList> ELSE <FieldListSequence>
+            | CASE Identifier ':' <Qualident> OF <Aux_FieldList> ELSE <FieldListSequence>
              | CASE Identifier ':' <Qualident> OF  <Aux_FieldList>
              | CASE <Qualident> OF  <Aux_FieldList>
              | CASE <Qualident> OF  <Aux_FieldList> ELSE <FieldListSequence>
-             | 
+             |
 
-!<FieldList> ::= <IdentifierList> ':' <Type>
-!             | CASE Identifier ':' <Qualident> OF <Aux_FieldList> <z>
-!             | CASE <Qualident> OF  <Aux_FieldList> <z>
-!             | 
-!             
-!<z>  ::= ELSE <FieldListSequence>
-!      |
-      
 <Aux_FieldList> ::= <Aux_FieldList> '|' <Variant>
                  | <Variant>
 
 <Variant> ::= <CaseLabelList> ':' <FieldListSequence>
 
-<CaseLabelList> ::= <CaseLabelList> ',' <CaseLabels> 
+<CaseLabelList> ::= <CaseLabelList> ',' <CaseLabels>
                      | <CaseLabels>
 
 <CaseLabels> ::= <ConstantExpression> '..' <ConstantExpression>
@@ -162,7 +154,7 @@ String = '"' {Character}* '"'
                     | '(' ')' ':' <Qualident>
                     | '(' ')'
 
-<Aux_FormalParameters> ::= <Aux_FormalParameters> ',' <FormalParametersSection> 
+<Aux_FormalParameters> ::= <Aux_FormalParameters> ',' <FormalParametersSection>
                         |
 
 <FormalParametersSection> ::= VAR <IdentifierList> ':' <FormalType>
@@ -176,7 +168,7 @@ String = '"' {Character}* '"'
                      | MODULE Identifier <Priority> ';' <R_Import> <Block> Identifier
                      | MODULE Identifier ';' <R_Import> <Block> Identifier
 
-<StatementSequence> ::= <StatementSequence> ';' <Statement> 
+<StatementSequence> ::= <StatementSequence> ';' <Statement>
                          | <Statement>
 
 <Statement> ::= <Assignment>
@@ -203,13 +195,13 @@ String = '"' {Character}* '"'
 <IfStatement> ::= IF <Expression> THEN <StatementSequence> <Aux_IfStatement> ELSE <StatementSequence> END
                | IF <Expression> THEN <StatementSequence> <Aux_IfStatement> END
 
-<Aux_IfStatement> ::= <Aux_IfStatement> ELSIF <Expression> THEN <StatementSequence> 
+<Aux_IfStatement> ::= <Aux_IfStatement> ELSIF <Expression> THEN <StatementSequence>
                    |
 
 <CaseStatement> ::= CASE <Expression> OF <Case> <Aux_CaseStatement> ELSE <StatementSequence> END
                  | CASE <Expression> OF <Case> <Aux_CaseStatement> END
 
-<Aux_CaseStatement> ::= <Aux_CaseStatement> '|' <Case> 
+<Aux_CaseStatement> ::= <Aux_CaseStatement> '|' <Case>
                      |
 
 <Case> ::= <CaseLabelList> ':' <StatementSequence>
@@ -227,7 +219,7 @@ String = '"' {Character}* '"'
 <ActualParameters> ::= '(' <ExpressionList> ')'
                     | '(' ')'
 
-<ExpressionList> ::= <ExpressionList> ',' <Expression> 
+<ExpressionList> ::= <ExpressionList> ',' <Expression>
                   | <Expression>
 
 <Expression> ::= <SimpleExpression> <RelOperator> <SimpleExpression>
@@ -237,7 +229,7 @@ String = '"' {Character}* '"'
                     | '-' <Term> <Aux_SimpleExpresions>
                     | <Term> <Aux_SimpleExpresions>
 
-<Aux_SimpleExpresions> ::= <Aux_SimpleExpresions> <AddOperator> <Term> 
+<Aux_SimpleExpresions> ::= <Aux_SimpleExpresions> <AddOperator> <Term>
                         |
 
 <Term> ::= <Term> <MulOperator> <Factor>
@@ -258,7 +250,7 @@ String = '"' {Character}* '"'
                             | '-' <ConstantTerm> <Aux_SimpleConstantExpression>
                             | <ConstantTerm> <Aux_SimpleConstantExpression>
 
-<Aux_SimpleConstantExpression> ::= <Aux_SimpleConstantExpression> <AddOperator> <ConstantTerm> 
+<Aux_SimpleConstantExpression> ::= <Aux_SimpleConstantExpression> <AddOperator> <ConstantTerm>
                                 |
 
 <ConstantTerm> ::= <ConstantTerm> <MulOperator> <ConstantFactor>
@@ -276,39 +268,42 @@ String = '"' {Character}* '"'
        | <Qualident> '{' '}'
        | '{' '}'
 
-<Aux_Set> ::= <Aux_Set> ',' <Element> 
+<Aux_Set> ::= <Aux_Set> ',' <Element>
            |
 
 <Element> ::= <ConstantExpression> '..' <ConstantExpression>
            | <ConstantExpression>
 
 <Designator> ::= <Qualident>
-              | <Qualident> '[' <ExpressionList> ']'
-              | <Qualident> '^'
+              | <Designator> '.' Identifier
+              | <Designator> '[' <ExpressionList> ']'
+              | <Designator> '^'
 
 !Qualident ::= Identifier { "." Identifier }
 <Qualident> ::= <Qualident> '.' Identifier
              | Identifier
 
+
+
 <IdentifierList> ::= <IdentifierList> ',' Identifier
                   | Identifier
 
-<RelOperator> ::= '=' 
-               | '#' 
-               | '<>' 
-               | '<' 
-               | '<=' 
-               | '>' 
-               | '>=' 
+<RelOperator> ::= '='
+               | '#'
+               | '<>'
+               | '<'
+               | '<='
+               | '>'
+               | '>='
                | IN
 
-<AddOperator> ::= '+' 
-               | '-' 
+<AddOperator> ::= '+'
+               | '-'
                | OR
 
-<MulOperator> ::= '*' 
-               | '/' 
-               | DIV 
-               | MOD 
-               | AND 
+<MulOperator> ::= '*'
+               | '/'
+               | DIV
+               | MOD
+               | AND
                | '&'
