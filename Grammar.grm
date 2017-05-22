@@ -6,22 +6,27 @@ Identifier =  {Letter}{Alphanumeric}*
 
 {HexDigit} = {Digit} + [ABCDEF] !| 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
 
-!Integer = {Digit}+
-!        | {OctalDigit}+'B'
-!        | {OctalDigit}+'C'
-!        | {Digit}{HexDigit}'H'
+Integer = {Digit}+
+        | {OctalDigit}+('B'|'C')
+        | {Digit}{HexDigit}'H'
 
-!Real = {Digit}+'.'{Digit}*('E'('+'|'-')?{Digit}+)?
+Real = {Digit}+'.'{Digit}*('E'('+'|'-')?)?{Digit}+
 
-!Number = Integer | Real
+<Number> ::= Integer 
+       | Real
 
-Number = ({Digit}+ | ('0' | '1' | '2' | '3' | '4' | '5' | '6' | '7')+ ( 'B' | 'C' ) | {Digit} ({Digit} | 'A' | 'B' | 'C' | 'D'| 'E' | 'F')* 'H') | ( {Digit}+ '.' {Digit}*  [ 'E' ] [ '+' | '-' ] {Digit}+ )
+!<Number> ::= ({Digit}+ | ('0' | '1' | '2' | '3' | '4' | '5' | '6' | '7')+ ( 'B' | 'C' ) | {Digit} ({Digit} | 'A' | 'B' | 'C' | 'D'| 'E' | 'F')* 'H') | ( {Digit}+ '.' {Digit}*  [ 'E' ] [ '+' | '-' ] {Digit}+ )
 
 String = '"' {Character}* '"'
 
 {Character} = {Printable} - ["]
 
+"Case Sensitive" = False
 "Start Symbol" =  <CompilationUnit>
+               
+Comment Start = '(*'
+Comment End   = '*)'
+Comment Line  = '//'
 
 !-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -235,7 +240,7 @@ String = '"' {Character}* '"'
 <Term> ::= <Term> <MulOperator> <Factor>
         | <Factor>
 
-<Factor> ::= Number
+<Factor> ::= <Number>
           | String
           | <Set>
           | <Designator> <ActualParameters>
@@ -257,7 +262,7 @@ String = '"' {Character}* '"'
                 | <ConstantFactor>
 
 <ConstantFactor> ::= <Qualident>
-                  | Number
+                  | <Number>
                   | String
                   | <Set>
                   | '(' <ConstantExpression> ')'
